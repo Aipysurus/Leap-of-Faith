@@ -1,12 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
 {
+    [SerializeField] private GameObject dialogueBox;
     [SerializeField] private Text textLabel;
+    [SerializeField] private DialogueObject testDialogue;
 
+    private TypewriterEffect typewriterEffect;
+    
     private void Start()
     {
-        GetComponent<TypewriterEffect>().Run("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse accumsan quam quis varius scelerisque. Nullam pharetra iaculis purus sed rutrum.", textLabel);
+        typewriterEffect = GetComponent<TypewriterEffect>();
+        CloseDialogueBox();
+        ShowDialogue(testDialogue);
+    }
+
+    public void ShowDialogue(DialogueObject dialogueObject)
+    {
+        dialogueBox.SetActive(true);
+        StartCoroutine(StepThroughDialogue(dialogueObject));
+    }
+
+    private IEnumerator StepThroughDialogue(DialogueObject dialogueObject)
+    {
+        foreach (string dialogue in dialogueObject.Dialogue)
+        {
+            yield return typewriterEffect.Run(dialogue, textLabel);
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        }
+
+        CloseDialogueBox();
+    }
+
+    private void CloseDialogueBox()
+    {
+        dialogueBox.SetActive(false);
+        textLabel.text = string.Empty;
     }
 }

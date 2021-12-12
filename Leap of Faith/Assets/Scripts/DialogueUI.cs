@@ -8,6 +8,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private Text textLabel;
     [SerializeField] private DialogueObject testDialogue;
+    [SerializeField] private Button triggerButton;
 
     private TypewriterEffect typewriterEffect;
     
@@ -15,9 +16,17 @@ public class DialogueUI : MonoBehaviour
     {
         typewriterEffect = GetComponent<TypewriterEffect>();
         CloseDialogueBox();
-        ShowDialogue(testDialogue);
+        triggerButton.GetComponent<Button>().onClick.AddListener(ButtonActivatesDialogue);
     }
 
+    private void ButtonActivatesDialogue()
+    {
+        if (!dialogueBox.activeSelf)
+        {
+            ShowDialogue(testDialogue);
+        }
+    }
+    
     public void ShowDialogue(DialogueObject dialogueObject)
     {
         dialogueBox.SetActive(true);
